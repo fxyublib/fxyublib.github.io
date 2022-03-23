@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet sample</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 400px"></div>
+    <div class="panel panel-default" style="margin-top: 20px">
+
+        <div class="panel-body">
+            <div class="container">
+                <div class="form-group">
+                    <div class="col-sm-11">
+                        <label class="col-sm-1 control-label">经度</label>
+                        <input type="text" class="form-control" id="lon">
+                        <label class="col-sm-1 control-label">纬度</label>
+                        <input type="text" class="form-control" id="lat">
+                        <button id="search" class="btn btn-success">查询</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        //Creating map options
+        var mapOptions = {
+            center: [39.385044, 114.486671],
+            zoom: 5
+        }
+        // Creating a map object
+        var map = new L.map('map', mapOptions);
+
+        // var latlng = L.latLng(39.385044, 114.486671);
+        // var map = L.map('map', { center: latlng, zoom: 8 });
+
+        // Creating Layer objects
+        var baseLayers = {
+            "高德卫星图": L.tileLayer(
+                'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
+                    subdomains: "1234"
+                }),
+            "高德路网图": L.tileLayer(
+                'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+                    subdomains: "1234"
+                }),
+            "高德矢量图": L.tileLayer(
+                'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
+                    subdomains: "1234"
+                }),
+            'GeoQ深蓝图': L.tileLayer(
+                'http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+            ).addTo(map),
+
+        };
+
+        var layercontrol = L.control.layers(baseLayers, {}, {
+            position: "topleft"
+        }).addTo(map);
+
+        function onMapClick(e) {
+            var popup = L.popup();
+            popup.setLatLng(e.latlng)
+                .setContent("你点击的位置在 " + e.latlng.toString())
+                .openOn(map);
+        }
+        map.on('click', onMapClick);
+
+        var marker = L.marker([0, 0]).addTo(map);
+
+        $('#search').click(function () {
+            var name = $('#lat').val();
+            var address = $('#lon').val();
+            if (name == '' || address == '') {
+                alert('查询条件为空！');
+            } else {
+                var lat = $('#lat').val();
+                var lon = $('#lon').val();
+
+                let center = L.latLng(lat, lon);
+                map.flyTo(center, 6);
+
+                marker.setLatLng(center);
+                marker.bindPopup('地图中心点经纬度:<br>' + center).openPopup();
+            }
+
+        });
+
+        
+    </script>
+</body>
+
+</html>
