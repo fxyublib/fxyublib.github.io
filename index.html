@@ -68,27 +68,27 @@
                 }),
             'GeoQ深蓝图': L.tileLayer(
                 'http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
-            ).addTo(map),
+            ),
             'GeoQ灰色图': L.tileLayer(
                 'http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetGray/MapServer/tile/{z}/{y}/{x}'
-            ).addTo(map),
+            ),
             'GeoQ街道图': L.tileLayer(
                 'http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}'
-            ).addTo(map),
+            ),
             'basemaps': L.tileLayer(
                 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                     attribution: "cartodbAttribution",
                     subdomains: "abcd"
-                }).addTo(map),
+                }),
             'OSM Transport Map': L.tileLayer(
                 'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'
-            ).addTo(map),
+            ),
             'OSM Cycle Map': L.tileLayer(
                 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
-            ).addTo(map),
+            ),
             'Mapbox卫星图': L.tileLayer(
                 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
-            ).addTo(map),
+            ),
             'Mapbox街道图': L.tileLayer(
                 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
             ).addTo(map),
