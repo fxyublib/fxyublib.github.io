@@ -118,7 +118,7 @@
                 var lon = $('#lon').val();
 
                 let center = L.latLng(lat, lon);
-                map.flyTo(center, 6);
+                map.flyTo(center, 16);
 
                 marker.setLatLng(center);
                 marker.bindPopup('地图中心点经纬度:<br>' + center).openPopup();
