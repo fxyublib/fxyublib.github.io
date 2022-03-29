@@ -77,14 +77,20 @@
             var z = coords.z;
             var x = coords.x;
             var y = coords.y;
-           
+
             //return 'http://localhost:3000/tiles/googlemaps/satellite/' + z + '/' + x + '/' + y + '.jpg';
         };
 
         var baseLayers = {
-            "自定义图": L.tileLayer(
+            "自定义图google": L.tileLayer(
                 'http://192.168.1.100:8001/googlemap/{z}/{x}/{y}.png'
-                ),
+            ),
+            "自定义图osm": L.tileLayer(
+                'http://192.168.1.100:8001/osm/{z}/{x}/{y}.png'
+            ),
+            "自定义图bing": L.tileLayer(
+                'http://192.168.1.100:8001/bingmap/{z}/{x}/{y}.png'
+            ),
             "高德卫星图": L.tileLayer(
                 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
                     subdomains: "1234"
