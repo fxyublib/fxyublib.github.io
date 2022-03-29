@@ -10,12 +10,27 @@
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-
+    <!-- 
     <style>
         #map {
             height: 90%;
             width: 98%;
             position: absolute;
+        }
+    </style> -->
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            min-width: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 90%;
         }
     </style>
 </head>
@@ -32,6 +47,8 @@
                         <label class="col-sm-1 control-label">纬度</label>
                         <input type="text" class="form-control" id="lat">
                         <button id="search" class="btn btn-success">查询</button>
+                        <label class="col-sm-1 control-label" id="zoom">缩放级别：0</label>
+                        <label class="col-sm-1 control-label" id="layer"></label>
                     </div>
                 </div>
 
@@ -39,8 +56,9 @@
         </div>
     </div>
     <div id="map"></div>
-    
+
     <script>
+        ////////////////////////////////////////////////////////////////////////////////
         //Creating map options
         var mapOptions = {
             center: [39.385044, 114.486671],
@@ -52,8 +70,21 @@
         // var latlng = L.latLng(39.385044, 114.486671);
         // var map = L.map('map', { center: latlng, zoom: 8 });
 
-        // Creating Layer objects
+        ////////////////////////////////////////////////////////////////////////////////
+        // leaflet图层
+        var mylayer = L.tileLayer();
+        layer.getTileUrl = function (coords) {
+            var z = coords.z;
+            var x = coords.x;
+            var y = coords.y;
+           
+            //return 'http://localhost:3000/tiles/googlemaps/satellite/' + z + '/' + x + '/' + y + '.jpg';
+        };
+
         var baseLayers = {
+            "自定义图": L.tileLayer(
+                'http://192.168.1.100:8001/googlemap/{z}/{x}/{y}.png'
+                ),
             "高德卫星图": L.tileLayer(
                 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
                     subdomains: "1234"
@@ -80,34 +111,76 @@
                     attribution: "cartodbAttribution",
                     subdomains: "abcd"
                 }),
-            'OSM Transport Map': L.tileLayer(
-                'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'
-            ),
-            'OSM Cycle Map': L.tileLayer(
-                'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
-            ),
             'Mapbox卫星图': L.tileLayer(
                 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
             ),
             'Mapbox街道图': L.tileLayer(
                 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
+            ),
+            'OSM': L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    id: '12',
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+            'OSM Transport Map': L.tileLayer(
+                'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'
+            ),
+            'OSM Cycle Map': L.tileLayer(
+                'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
             ).addTo(map),
+
+            "google(m)": L.tileLayer(
+                'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                }),
+            "TianDiTu(Normal)": L.tileLayer(
+                'http://t{s}.tianditu.gov.cn/DataServer?T=vec_w&X={x}&Y={y}&L={z}&tk=174705aebfe31b79b3587279e211cb9a', {
+                    subdomains: "1234567"
+                }),
+
         };
 
-        var layercontrol = L.control.layers(baseLayers, {}, {
+        L.control.layers(baseLayers, {}, {
             position: "topleft"
         }).addTo(map);
 
-        function onMapClick(e) {
+        ////////////////////////////////////////////////////////////////////////////////
+        // leaflet事件
+        map.on('click', function (e) {
             var popup = L.popup();
             popup.setLatLng(e.latlng)
-                .setContent("你点击的位置在 " + e.latlng.toString())
+                .setContent("你点击的位置在 " + e.latlng.toString() + "," + map.getZoom())
                 .openOn(map);
-        }
-        map.on('click', onMapClick);
+            //L.popup().setLatLng(e.latlng).setContent(e.latlng.toString()).openOn(map);
+        });
+        map.on('dblclick', function (e) {
+            L.marker(e.latlng).addTo(map)
+        });
+        map.on('zoom', function (e) {
+            $('#zoom').html("缩放级别：" + map.getZoom());
+        });
+        map.on('move', function (e) {
+            var latlng = map.getCenter();
+            $('#lat').val(latlng.lat);
+            $('#lon').val(latlng.lng);
+        });
+        map.on('baselayerchange', function (e) {
+            $('#layer').html(e.name);
+        });
 
-        var marker = L.marker([0, 0]).addTo(map);
+        ////////////////////////////////////////////////////////////////////////////////
+        // leaflet控件
+        var scale = L.control.scale().addTo(map);
+        L.control.attribution({
+            position: 'topright',
+            prefix: 'Edited by 爱看书的小沐'
+        }).addTo(map);
+        //L.control.zoom({zoomInTitle:'放大', zoomOutTitle:'缩小'}).addTo(map);
 
+        ////////////////////////////////////////////////////////////////////////////////
+        // 其他
+        var marker = L.marker([0, 0]);
         $('#search').click(function () {
             var name = $('#lat').val();
             var address = $('#lon').val();
@@ -120,13 +193,11 @@
                 let center = L.latLng(lat, lon);
                 map.flyTo(center, 16);
 
-                marker.setLatLng(center);
+                marker.setLatLng(center).addTo(map);
                 marker.bindPopup('地图中心点经纬度:<br>' + center).openPopup();
             }
 
         });
-
-        
     </script>
 </body>
 
