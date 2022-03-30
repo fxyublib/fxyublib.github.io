@@ -112,16 +112,26 @@
             'GeoQ街道图': L.tileLayer(
                 'http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}'
             ),
+            'ArcGIS Image': L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ),
+            'ArcGIS Street': L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+            ),
+            'ArcGIS Topo': L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+            ),
+            
             'basemaps': L.tileLayer(
                 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                     attribution: "cartodbAttribution",
                     subdomains: "abcd"
                 }),
             'Mapbox卫星图': L.tileLayer(
-                'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
+                'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wxOTQ1ZnZtMGpleTNscG1ndzdlNWZxdCJ9.nlz_OoLc5EgWxIp187bUdw'
             ),
             'Mapbox街道图': L.tileLayer(
-                'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wwcTRzazJhMjZ3aDNlcWtvZXM5c21mdCJ9.OCVG-gXpFoaMXlF9vlsV1w'
+                'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wxOTQ1ZnZtMGpleTNscG1ndzdlNWZxdCJ9.nlz_OoLc5EgWxIp187bUdw'
             ),
             'OSM': L.tileLayer(
                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -134,9 +144,18 @@
             'OSM Cycle Map': L.tileLayer(
                 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
             ).addTo(map),
-
-            "google(m)": L.tileLayer(
+            "Google(m)": L.tileLayer(
                 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                }),
+            "Google(p)": L.tileLayer(
+                'http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                }),
+            "Google(y)": L.tileLayer(
+                'http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
                     maxZoom: 20,
                     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                 }),
@@ -197,7 +216,7 @@
                 var lon = $('#lon').val();
 
                 let center = L.latLng(lat, lon);
-                map.flyTo(center, 16);
+                map.flyTo(center, map.getZoom());
 
                 marker.setLatLng(center).addTo(map);
                 marker.bindPopup('地图中心点经纬度:<br>' + center).openPopup();
