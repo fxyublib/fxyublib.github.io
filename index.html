@@ -30,7 +30,7 @@
 
         #map {
             width: 100%;
-            height: 90%;
+            height: calc(100% - 48px);
         }
     </style>
 </head>
@@ -42,11 +42,11 @@
             <div class="container">
                 <div class="form-group">
                     <div class="col-sm-11">
-                        <label class="col-sm-1 control-label">经度</label>
-                        <input type="text" class="form-control" id="lon">
                         <label class="col-sm-1 control-label">纬度</label>
                         <input type="text" class="form-control" id="lat">
-                        <button id="search" class="btn btn-success">查询</button>
+                        <label class="col-sm-1 control-label">经度</label>
+                        <input type="text" class="form-control" id="lon">
+                        <button id="btn_search" class="btn btn-success">查询</button>
                         <label class="col-sm-1 control-label" id="zoom">缩放级别：0</label>
                         <label class="col-sm-1 control-label" id="layer"></label>
                     </div>
@@ -70,6 +70,8 @@
         // var latlng = L.latLng(39.385044, 114.486671);
         // var map = L.map('map', { center: latlng, zoom: 8 });
 
+        var marker = L.marker([0, 0]);
+
         ////////////////////////////////////////////////////////////////////////////////
         // leaflet图层
         var mylayer = L.tileLayer();
@@ -82,15 +84,7 @@
         };
 
         var baseLayers = {
-            "自定义图google": L.tileLayer(
-                'http://192.168.1.100:8001/googlemap/{z}/{x}/{y}.png'
-            ),
-            "自定义图osm": L.tileLayer(
-                'http://192.168.1.100:8001/osm/{z}/{x}/{y}.png'
-            ),
-            "自定义图bing": L.tileLayer(
-                'http://192.168.1.100:8001/bingmap/{z}/{x}/{y}.png'
-            ),
+
             "高德卫星图": L.tileLayer(
                 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
                     subdomains: "1234"
@@ -121,7 +115,7 @@
             'ArcGIS Topo': L.tileLayer(
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
             ),
-            
+
             'basemaps': L.tileLayer(
                 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                     attribution: "cartodbAttribution",
@@ -144,6 +138,14 @@
             'OSM Cycle Map': L.tileLayer(
                 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
             ).addTo(map),
+        };
+
+        L.control.layers(baseLayers, {}, {
+            position: "topleft"
+        }).addTo(map);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        var googleLayer = {
             "Google(m)": L.tileLayer(
                 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                     maxZoom: 20,
@@ -159,14 +161,39 @@
                     maxZoom: 20,
                     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                 }),
+        };
+        L.control.layers(googleLayer, {}, {
+            position: "topleft"
+        }).addTo(map);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        var tiandiLayer = {
             "TianDiTu(Normal)": L.tileLayer(
                 'http://t{s}.tianditu.gov.cn/DataServer?T=vec_w&X={x}&Y={y}&L={z}&tk=174705aebfe31b79b3587279e211cb9a', {
                     subdomains: "1234567"
                 }),
-
+            "TianDiTu(Image)": L.tileLayer(
+                'http://t{s}.tianditu.com/DataServer?T=img_c&X={x}&Y={y}&L={z}&tk=174705aebfe31b79b3587279e211cb9a', {
+                    subdomains: "1234567"
+                }),
         };
+        L.control.layers(tiandiLayer, {}, {
+            position: "topleft"
+        }).addTo(map);
 
-        L.control.layers(baseLayers, {}, {
+        ////////////////////////////////////////////////////////////////////////////////
+        var localLayer = {
+            "自定义图google": L.tileLayer(
+                'http://192.168.1.100:8001/googlemap/{z}/{x}/{y}.png'
+            ),
+            "自定义图osm": L.tileLayer(
+                'http://192.168.1.100:8001/osm/{z}/{x}/{y}.png'
+            ),
+            "自定义图bing": L.tileLayer(
+                'http://192.168.1.100:8001/bingmap/{z}/{x}/{y}.png'
+            ),
+        };
+        L.control.layers(localLayer, {}, {
             position: "topleft"
         }).addTo(map);
 
@@ -185,13 +212,41 @@
         map.on('zoom', function (e) {
             $('#zoom').html("缩放级别：" + map.getZoom());
         });
+
+        var centerPt = L.circle(map.getCenter(), {
+            radius: 100,
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: 1
+        }).addTo(map);
+
         map.on('move', function (e) {
             var latlng = map.getCenter();
             $('#lat').val(latlng.lat);
             $('#lon').val(latlng.lng);
+
+            centerPt.setLatLng(latlng);
         });
+
+        var lastLayer = null;
         map.on('baselayerchange', function (e) {
             $('#layer').html(e.name);
+            console.log("baselayerchange", e);
+
+            if (lastLayer != null) {
+                map.removeLayer(lastLayer);
+            } else {
+                map.eachLayer(function (layer) {
+                    console.log("eachLayer", layer);
+                    try {
+                        layer.setZIndex(0);
+                    } catch (err) {}
+                });
+
+            }
+
+
+            lastLayer = e.layer;
         });
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -205,8 +260,8 @@
 
         ////////////////////////////////////////////////////////////////////////////////
         // 其他
-        var marker = L.marker([0, 0]);
-        $('#search').click(function () {
+
+        $('#btn_search').click(function () {
             var name = $('#lat').val();
             var address = $('#lon').val();
             if (name == '' || address == '') {
