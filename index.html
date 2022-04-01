@@ -3,13 +3,9 @@
 
 <head>
     <title>Leaflet sample</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
-    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="./dist/leaflet.css"/>
+    <script src="./dist/leaflet.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <!-- 
     <style>
         #map {
@@ -36,8 +32,7 @@
 </head>
 
 <body>
-    <div class="panel panel-default" style="margin-top: 10px;margin-bottom: 10px">
-
+    <div class="panel panel-default" style="margin:10px 5px 5px 10px;background-color:White;">
         <div class="panel-body">
             <div class="container">
                 <div class="form-group">
@@ -48,7 +43,7 @@
                         <input type="text" class="form-control" id="lon">
                         <button id="btn_search" class="btn btn-success">查询</button>
                         <label class="col-sm-1 control-label" id="zoom">缩放级别：0</label>
-                        <label class="col-sm-1 control-label" id="layer"></label>
+                        <label class="col-sm-1 control-label" id="layer" style="padding:10px 10px 10px 10px;background-color:rgb(166, 255, 1);">TF Cycle Trial</label>
                     </div>
                 </div>
 
@@ -116,11 +111,7 @@
                 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
             ),
 
-            'basemaps': L.tileLayer(
-                'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-                    attribution: "cartodbAttribution",
-                    subdomains: "abcd"
-                }),
+
             'Mapbox卫星图': L.tileLayer(
                 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiaGlmaXNoZXIiLCJhIjoiY2wxOTQ1ZnZtMGpleTNscG1ndzdlNWZxdCJ9.nlz_OoLc5EgWxIp187bUdw'
             ),
@@ -132,12 +123,33 @@
                     id: '12',
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }),
-            'OSM Transport Map': L.tileLayer(
+            "OSM de": L.tileLayer(
+                'https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+                    subdomains: "abcd"
+                }),
+            'TF Transport Trial': L.tileLayer(
                 'http://tile.thunderforest.com/transport/{z}/{x}/{y}.png'
             ),
-            'OSM Cycle Map': L.tileLayer(
+            'TF Cycle Trial': L.tileLayer(
                 'http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
             ).addTo(map),
+
+            "TF Transport": L.tileLayer(
+                'https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=95b7c76e19c04e36ab9756f2cdf15b32', {
+                    subdomains: "abcd"
+                }),
+            "TF Cycle": L.tileLayer(
+                'https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=95b7c76e19c04e36ab9756f2cdf15b32', {
+                    subdomains: "abcd"
+                }),
+            "TF Outdoors": L.tileLayer(
+                'https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=95b7c76e19c04e36ab9756f2cdf15b32', {
+                    subdomains: "abcd"
+                }),
+            "TF Neighbourhood": L.tileLayer(
+                'https://{s}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=95b7c76e19c04e36ab9756f2cdf15b32', {
+                    subdomains: "abcd"
+                }),
         };
 
         L.control.layers(baseLayers, {}, {
@@ -168,6 +180,15 @@
 
         ////////////////////////////////////////////////////////////////////////////////
         var tiandiLayer = {
+            "omniscale": L.tileLayer(
+                'https://maps.omniscale.net/v2/mapsgraph-bf48cc0b/style.default/{z}/{x}/{y}.png?hq=true'
+            ),
+            'basemaps': L.tileLayer(
+                'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                    attribution: "cartodbAttribution",
+                    subdomains: "abcd"
+                }),
+
             "TianDiTu(Normal)": L.tileLayer(
                 'http://t{s}.tianditu.gov.cn/DataServer?T=vec_w&X={x}&Y={y}&L={z}&tk=174705aebfe31b79b3587279e211cb9a', {
                     subdomains: "1234567"
@@ -176,6 +197,7 @@
                 'http://t{s}.tianditu.com/DataServer?T=img_c&X={x}&Y={y}&L={z}&tk=174705aebfe31b79b3587279e211cb9a', {
                     subdomains: "1234567"
                 }),
+
         };
         L.control.layers(tiandiLayer, {}, {
             position: "topleft"
