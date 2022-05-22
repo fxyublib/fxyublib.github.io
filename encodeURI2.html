@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0065)https://www.w3cschool.cn/statics/tools/urlencode_decode/index.htm -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK"> 
+<title>URL在线编码转换工具</title> 
+
+<meta http-equiv="Content-Language" content="zh-CN"> 
+<style>
+#mainContent{
+    background:#ccc;
+    border:1px solid red;
+    width:100%;
+    height:100%;
+}
+#source,#result{
+    background:#ffffff;
+    border:1px solid red;
+    width:90%;
+    height:100%;
+	margin-left:5px;
+}
+</style>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+</head>
+
+<body marginwidth="10" marginheight="10">
+
+	<div id="mainContent">该工具提供URL编码转换的功能，还可自由选择完整编码转换与URL参数拼接等功能。
+	<div>
+		<div>
+		<h4>Url:</h4>
+    	<textarea name="url" id="source" rows="5" width="100%" class="textareas form-control">http://www.w3cschool.cn/?q=在线工具&amp;click=1&amp;s=10520733385329581432&amp;nsid=</textarea>
+	</div>
+    <div style="float:left">
+    	<div>
+			<label class="radio" id="en_tip" style="margin-left:20px;"><input name="_type" checked="checked" type="radio">encodeURI</label>
+			<label class="radio" id="co_tip" style="margin-left:20px;"><input name="_type" id="co_t" type="radio">encodeURIComponent</label>
+			<button class="btn btn-primary" onclick="javascript:encode_uri();">URL编码↓</button>
+            <button class="btn btn-primary" onclick="javascript:decode_uri();">URL解码↑</button>
+		</div>
+    </div>
+<div style="clear:both;"></div>
+    <div>
+		<h4>编码结果:</h4>
+		<textarea name="message" id="result" rows="5" class="textareas form-control"></textarea>
+    </div>
+<script>
+$(document).ready(function (){
+	$("#en_tip").popover({
+		'title':'encodeURI',
+		'content':'使用Javascript encodeURI() 函数，用于完整的URL编码。',
+		'placement':'right'
+    });
+	$("#co_tip").popover({
+		'title':'encodeURIComponent',
+		'content':'使用Javascript encodeURIComponent() 函数，用于拼接URL的参数。',
+		'placement':'right'
+    });
+});
+function encode_uri() {
+	if($("#co_t").attr("checked"))
+		$("#result").val(encodeURIComponent($("#source").val()));
+	else
+		$("#result").val(encodeURI($("#source").val()));
+}
+
+function decode_uri() { 
+	if($("#co_t").attr("checked"))
+		$("#source").val(decodeURIComponent($("#result").val()));
+	else
+		$("#source").val(decodeURI($("#result").val()));
+}
+
+</script>
+</div>
+</div>
+
+</body></html>
